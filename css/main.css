@@ -1,44 +1,123 @@
-.board-container table {
-    text-align: center;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-weight: bold;
-    /* border-collapse: separate; */
+.game-table, .difficulties, .game-scores {
+    margin: 0 auto 1em;
     border-spacing: 0px;
     user-select: none;
-    border: 5px solid;
-    border-color: #999 rgb(240, 240, 240) rgb(240, 240, 240) #999;
+    text-align: center;
+    background-color: #ccc;
+    border: 7px solid;
+    border-color: #eee#999 #999 #eee;
     font-family: 'Press Start 2P';
+    padding: 5px;
 }
 
 .cell {
+    font-size: 20px;
+    font-weight: bold;
     background-color: #ccc;
     border: 4px solid;
-    border-color: rgb(250, 250, 250) #aaa #aaa rgb(250, 250, 250);
-    width: 30px;
-    height: 30px;
+    border-color: #eee #999 #999 #eee;
+    height: 40px;
+    width: 40px;
     box-sizing: border-box;
 }
 
-/* Eventually, block "border: none" property when game is over */
-
-.cell:active {
+.clickable:active {
     border: none;
 }
 
 .clicked {
+    border: 2px solid;
+    border-color: #777 #eee #eee #777;
+}
+
+/* Seperator in game-table */
+
+.game-table th:empty, .game-table tfoot td:empty {
+    height: 5px;
+    border: 4px solid;
+    border-color: #999 #ddd #ddd#999;
+}
+
+/* Game functions */
+
+thead div {
+    display: inline-block;
     background-color: #ccc;
-    border: 1.5px solid;
-    border-color: #777 #ccc #ccc #777;
-    width: 30px;
-    height: 30px;
-    box-sizing: border-box
+    border: 4px solid;
+    border-color: #aaa #ddd #ddd #aaa;
+    padding: 2px;
+    width: 26%;
+}
+
+.game-table thead button {
+    background-color: #ccc;
+    border: 4px solid;
+    border-color: #eee #999 #999 #eee;
+    outline: none;
+    cursor: pointer;
+    padding: 2px;
+    width: 33%;
+}
+
+.game-table thead button:active {
+    border-color: #aaa #ddd #ddd #aaa;
+    transform: scale(0.95);
+}
+
+.game-table thead img {
+    height: 25px;
+    vertical-align: middle;
+}
+
+.stopwatch, .bombs-count {
+    font-family: monospace;
+    border: 4px solid;
+    border-color: #aaa #ddd #ddd #aaa;
+    background-color: #222;
+    color: #eee;
+    float: right;
+    padding: 3px;
+}
+
+.safe-clicks, .lives {
+    font-family: 'Press Start 2P';
+    vertical-align: bottom;
+    /* font-size: 0.8em; */
+}
+
+.difficulties div {
+    font-family: monospace;
+    display: inline-block;
+    text-align: center;
+    width: 25%;
+    padding-top: 5px;
+    word-wrap: break-word;
+    font-weight: bold;
+}
+
+.difficulties div input {
+    display: block;
+    margin: 0.5em auto 0;
+    transform: scale(1.5);
+}
+
+.game-scores {
+    font-family: monospace;
+    width: fit-content;
+    border-spacing: 2em 0.5em;
+}
+
+/* Game elements */
+
+.game-el {
+    display: block;
+    width: 100%;
+    height: 100%;
+    /* width: 30px;
+    height: 30px; */
 }
 
 /* Numbers colors */
-
-/* .num0 {
-    color: transparent;
-} */
 
 .num1 {
     color: blue;
@@ -71,3 +150,7 @@
 .num8 {
     color: gray;
 }
+
+/* .num0 {
+    color: transparent;
+} */
