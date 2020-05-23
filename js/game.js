@@ -29,7 +29,7 @@ function initGame() {
         remainingLives: gLevel.LIVES,
         remainingSafeClicks: gLevel.SAFE_CLICKS,
         isHint: false,
-        isFirstCellClicked: false
+        isBoardHasMines: false
     };
     gBoard = buildBoard(gLevel.HEIGHT, gLevel.WIDTH, gLevel.MINES);
     gUndos = [];
@@ -45,13 +45,13 @@ function initGame() {
     renderBoard(gBoard, '.game-table tbody');
 }
 
-function cellClicked(elCell, i, j) {
+function cellClicked(elCell, i, j, isCalledFromRecursion = false) {
     var cell = gBoard[i][j];
     if (!gGame.isOn || cell.isShown || cell.isMarked) return;
-    if (!gGame.isFirstCellClicked) {
+    if (!gGame.isBoardHasMines) {
         addMines(gBoard, gLevel.MINES, i, j); // First click is never a mine
         startStopwatch();
-        gGame.isFirstCellClicked = true;
+        gGame.isBoardHasMines = true;
     } else if (gGame.isHint) {
         revealHint(gBoard, i, j);
         return;
@@ -64,7 +64,7 @@ function cellClicked(elCell, i, j) {
     elCell.classList.remove('clickable');
     elCell.classList.add('clicked', `num${cell.minesAroundCount}`);
 
-    gUndos.push({ elCell: elCell, i: i, j: j, reursive: false })
+    gUndos.push({ elCell: elCell, i: i, j: j, recursive: isCalledFromRecursion })
     if (cell.isMine) updateLives(elCell);
     else {
         gGame.numsShownCount++;
@@ -86,39 +86,9 @@ function cellMarked(elCell, i, j) {
     elCell.innerHTML = cellContent;
     gGame.markedCount += (cell.isMarked) ? 1 : -1;
     updateBombsCount(gGame, gLevel);
-    gUndos.push({ elCell: elCell, i: i, j: j, mark: true })
+    gUndos.push({ elCell: elCell, i: i, j: j, isMark: true })
 }
 
-function undo() {
-    if (!gUndos.length || !gGame.isOn) return;
-    var currUndo = gUndos.pop();
-    var currCell = gBoard[currUndo.i][currUndo.j];
-    if (currUndo.mark) {
-        currCell.isMarked = !currCell.isMarked;
-        gGame.markedCount += (currCell.isMarked) ? 1 : -1;
-        updateBombsCount(gGame, gLevel);
-
-        currUndo.elCell.classList.toggle('clickable');
-        var cellContent = (currCell.isMarked) ? FLAG : '';
-        currUndo.elCell.innerHTML = cellContent;
-    } else {
-        gBoard[currUndo.i][currUndo.j].isShown = false;
-        gGame.numsShownCount--;
-        if (gBoard[currUndo.i][currUndo.j].isMine) {
-            currUndo.elCell.style.backgroundColor = 'initial';
-            gGame.remainingLives++;
-            updateLives();
-
-        }
-        currUndo.elCell.innerText = '';
-        currUndo.elCell.classList.add('clickable');
-        currUndo.elCell.classList.remove('clicked');
-        if (currUndo.recursive) undo();
-    }
-    //     remainingLives: gLevel.LIVES,
-    //     remainingSafeClicks: gLevel.SAFE_CLICKS,
-
-}
 
 function safeClick() {
     if (gGame.numsShownCount === 0) alert('First click is always safe :)');
@@ -146,6 +116,7 @@ function safeClick() {
         gBoard[randSafeCellPos.i][randSafeCellPos.j].isShown = false;
     }, 1500);
 }
+
 
 function toggleHint(elHint) {
     if (gGame.numsShownCount === 0) {
@@ -203,6 +174,32 @@ function revealHint(board, rowIdx, colIdx) {
     }, 1000);
 }
 
+function undo() {
+    if (!gUndos.length || !gGame.isOn) return;
+    var currUndo = gUndos.pop();
+    var currCell = gBoard[currUndo.i][currUndo.j];
+    if (currUndo.isMark) {
+        currCell.isMarked = !currCell.isMarked;
+        gGame.markedCount += (currCell.isMarked) ? 1 : -1;
+        updateBombsCount(gGame, gLevel);
+
+        currUndo.elCell.classList.toggle('clickable');
+        var cellContent = (currCell.isMarked) ? FLAG : '';
+        currUndo.elCell.innerHTML = cellContent;
+    } else {
+        gBoard[currUndo.i][currUndo.j].isShown = false;
+        gGame.numsShownCount--;
+        if (gBoard[currUndo.i][currUndo.j].isMine) {
+            currUndo.elCell.style.backgroundColor = 'initial';
+            gGame.remainingLives++;
+            updateLives();
+        }
+        currUndo.elCell.innerText = '';
+        currUndo.elCell.classList.add('clickable');
+        currUndo.elCell.classList.remove('clicked');
+        if (currUndo.recursive) undo();
+    }
+}
 
 function checkGameOver(clickedBombEl) {
     // if (!gGame.isOn) return;
@@ -238,9 +235,8 @@ function expandShown(board, rowIdx, colIdx) {
             if (i === rowIdx && j === colIdx) continue;
             if (!cell.isMine) {
                 var elCell = document.querySelector(`.cell-${i}-${j}`);
-                gUndos[gUndos.length - 1].recursive = true;
-                cellClicked(elCell, i, j);
-                gUndos[gUndos.length - 1].recursive = true;
+                // gUndos[gUndos.length - 1].recursive = true;
+                cellClicked(elCell, i, j, true);
             }
         }
     }
