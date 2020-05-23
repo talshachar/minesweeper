@@ -11,7 +11,7 @@ function renderBoard(board, selector) {
         for (var j = 0; j < board[0].length; j++) {
             var className = `cell clickable cell-${i}-${j}`;
             strHTML += `<td class="${className}" onclick="cellClicked(this, ${i}, ${j})"
-             oncontextmenu="cellMarked(this, ${i}, ${j}); return false" data-i="${i}" data-j="${j}"></td>`;
+             oncontextmenu="cellMarked(this, ${i}, ${j}); return false"</td>`;
         }
     }
     document.querySelector(selector).innerHTML = strHTML;
@@ -41,6 +41,19 @@ function revealGameElements(board, gameEl) {
     }
 }
 
+// function toggleClearCellsClicks(board) {
+//     var clearCells = getClearCellsPos(board);
+//     for (var idx = 0; idx < clearCells.length; idx++) {
+//         var i = clearCells[idx].i;
+//         var j = clearCells[idx].j;
+//         var currCell = board[i][j];
+//         var currElCell = document.querySelector(`.cell-${i}-${j}`);
+
+//         currCell.isShown = !currCell.isShown;
+//         currElCell.classList.toggle('clickable');
+//     }
+// }
+
 function getClearCellsPos(board) {
     var clearCells = [];
     for (var i = 0; i < board.length; i++) {
@@ -57,7 +70,7 @@ function getClearCellsPos(board) {
 function updateLives(bombCellEl = null) {
     if (bombCellEl) {
         gGame.remainingLives--;
-        if (gGame.remainingLives > 0) bombCellEl.style.backgroundColor = '#faa';
+        if (gGame.remainingLives > 0) bombCellEl.style.backgroundColor = '#ff5';
         document.querySelector('.lives').style.color = 'red';
         setTimeout(function () {
             document.querySelector('.lives').style.color = 'initial';
@@ -69,14 +82,22 @@ function updateLives(bombCellEl = null) {
 function updateBombsCount(game, level) {
     var bombsCount = level.MINES - game.markedCount - (level.LIVES - game.remainingLives);
 
-    document.querySelector('.bombs-count').innerText = (bombsCount > 9) ? bombsCount :
+    document.querySelector('.bombs-count span').innerText = (bombsCount > 9) ? bombsCount :
         (bombsCount >= 0) ? '0' + bombsCount : '00';
 }
 
+function resetHints() {
+    var hints = document.querySelectorAll('.hint');
+    for (var i = 0; i < hints.length; i++) {
+        hints[i].innerHTML = '<img onclick="toggleHint(this)" src="img/light-bulb.png" style=" cursor: pointer;" />';
+        hints[i].style.backgroundColor = 'initial';
+    }
+}
 
+// -- Stopwatch --
 function startStopwatch() {
     gTimeBegan = new Date();
-    gStopwatchInterval = setInterval(runStopwatch, 10);
+    gStopwatchInterval = setInterval(runStopwatch, 11);
 }
 
 function runStopwatch() {
@@ -86,7 +107,7 @@ function runStopwatch() {
     var sec = timeElapsed.getUTCSeconds();
     var ms = timeElapsed.getUTCMilliseconds();
 
-    document.querySelector('.stopwatch').innerText =
+    document.querySelector('.stopwatch span').innerText =
         (min > 9 ? min + ':' : min > 0 ? '0' + min + ':' : '') +
         (sec > 9 ? sec : '0' + sec) + '.' +
         (ms > 99 ? ms : ms > 9 ? '0' + ms : '00' + ms);
@@ -95,10 +116,12 @@ function runStopwatch() {
 function resetStopwatch() {
     clearInterval(gStopwatchInterval);
     gStopwatchInterval = null;
-    document.querySelector('.stopwatch').innerText = "00.000";
+    document.querySelector('.stopwatch span').innerText = "00.000";
 }
+// ---------------
 
 
+// -- Best scores --
 function updateBestScores(difficulty, time) {
     if (!difficulty || !time) return;
     var bestScore = localStorage.getItem(difficulty);
@@ -110,7 +133,6 @@ function updateBestScores(difficulty, time) {
     }
 }
 
-// Helps to compare between minutes to seconds
 function timeStringToFloat(time) {
     var splittedTime = time.split(':');
     var minsToSecs = splittedTime[1] ? splittedTime[0] * 60 : 0;
@@ -119,7 +141,7 @@ function timeStringToFloat(time) {
 }
 
 function loadBestScores() {
-    // document.querySelector('.highscore').style.display = 'none'; // Add highscore modal
+    // document.querySelector('.highscore').style.display = 'none'; // Add a new highscore modal
     var bestScoreHTML = document.querySelector('.beginner-score');
     var bestScore = localStorage.getItem('beginner');
     if (bestScore) bestScoreHTML.innerText = bestScore;
@@ -130,3 +152,4 @@ function loadBestScores() {
     var bestScore = localStorage.getItem('expert');
     if (bestScore) bestScoreHTML.innerText = bestScore;
 }
+// -----------------

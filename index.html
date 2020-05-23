@@ -6,37 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minesweeper</title>
     <link rel="stylesheet" href="css/main.css" />
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap&text=.:0123456789">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+    <!-- &text=.:0123456789 -->
 </head>
 
 <body onload="initGame()">
 
-    <table class="difficulties">
-        <tr>
-            <td colspan="100%"></td>
-        </tr>
-        <tr>
-            <td colspan="100%"">
-            <div><span>Beginner (4x4)</span><input onclick=" initGame()" type="radio" name="difficulty" data-i="4"
-                data-j="4" data-mines="2" data-lives="2" data-safeclicks="3" data-name="beginner" checked>
-                </div>
-                <div><span>Medium (8x8)</span><input onclick="initGame()" type="radio" name="difficulty" data-i="8"
-                        data-j="8" data-mines="12" data-lives="1" data-safeclicks="2" data-name="medium"> </div>
-                <div><span>Expert (12x12)</span><input onclick="initGame()" type="radio" name="difficulty" data-i="12"
-                        data-j="12" data-mines="30" data-lives="1" data-safeclicks="1" data-name="expert"> </div>
-            </td>
-        </tr>
-    </table>
+    <div class="difficulties">
+        <span>Beginner (4x4)<input onclick=" initGame()" type="radio" name="difficulty" data-i="4" data-j="4"
+                data-mines="2" data-lives="1" data-safeclicks="3" data-name="beginner" checked></span>
+        <span>Medium (8x8)<input onclick="initGame()" type="radio" name="difficulty" data-i="8" data-j="8"
+                data-mines="12" data-lives="2" data-safeclicks="2" data-name="medium"></span>
+        <span>Expert (12x12)<input onclick="initGame()" type="radio" name="difficulty" data-i="12" data-j="12"
+                data-mines="30" data-lives="3" data-safeclicks="1" data-name="expert"></span>
+    </div>
 
     <table class="game-table">
         <thead>
-            <tr>
-                <th colspan="100%" style="padding: 7px;">
-                    <span class="bombs-count" style="float: left;"></span><img style="float: left;"
-                        src="img/bomb.png" />
-                    <span class="stopwatch">00.0</span>
-                </th>
+            <th colspan="100%">
+                <div class=" bombs-count" style="float: left;"><img src="img/bomb.png"
+                        style="vertical-align: middle; margin-right: 5px;" /><span></span></div>
+                <div class="stopwatch" style="float: right;"><span style="font-family: monospace;"></span></div>
+            </th>
             </tr>
             <tr>
                 <th colspan="100%"></th>
@@ -44,36 +35,58 @@
             <tr>
                 <th colspan="100%">
                     <button onclick="safeClick()" title="Safe Click" style="float: left;"><img
-                            src="img/safeclick.png" /><span class="safe-clicks">3</span></button>
+                            src="img/safe-click.png" /><span class="safe-clicks"></span></button>
                     <button onclick="initGame()" title="Restart"><img class="smiley"
-                            src="img/smiley_smile.png"></button>
+                            src="img/smiley-happy.png"></button>
                     <div title="Remaining Lives" style="float: right;"><img src="img/heart.png" /><span
-                            class="lives">3</span></div>
+                            class="lives"></span></div>
                 </th>
             </tr>
             <tr>
                 <th colspan="100%"></th>
             </tr>
+            <tr style="height: 5px;"></tr>
         </thead>
+
         <!-- Game board is being rendered into tbody -->
         <tbody></tbody>
-        <!--  -->
+
+        <tfoot style="padding: 0;">
+            <tr style="height: 5px;"></tr>
+            <tr>
+                <th colspan="100%"></th>
+            </tr>
+            <tr>
+                <td colspan="100%">
+                    <div class="hint" style="float: left; width: 25%;" title="Hint"><img onclick="toggleHint(this)"
+                            src="img/light-bulb.png" style=" cursor: pointer;" />
+                    </div>
+                    <div class="hint" style="float: left; width: 25%;" title="Hint"><img onclick="toggleHint(this)"
+                            src="img/light-bulb.png" style=" cursor: pointer;" />
+                    </div>
+                    <div class="hint" style="float: left; width: 25%;" title="Hint"><img onclick="toggleHint(this)"
+                            src="img/light-bulb.png" style=" cursor: pointer;" />
+                    </div>
+                    <button onclick="undo()" style="float: left; width: 25%;" title="Undo"><img src="img/undo.png" /></button>
+                </td>
+            </tr>
+        </tfoot>
     </table>
 
     <table class="game-scores">
         <tr>
-            <td colspan="2" style="border: none; font-weight: bold;">Best Scores</td>
+            <td colspan="2" style="font-size: 1.2em; font-weight: bold;">Best Scores</td>
         </tr>
         <tr>
-            <td>Beginner</td>
+            <td style="text-align: left; font-weight: bold;">Beginner</td>
             <td class="beginner-score">-</td>
         </tr>
         <tr>
-            <td>Medium</td>
+            <td style="text-align: left; font-weight: bold;">Medium</td>
             <td class="medium-score">-</td>
         </tr>
         <tr>
-            <td>Expert</td>
+            <td style="text-align: left; font-weight: bold;">Expert</td>
             <td class="expert-score">-</td>
         </tr>
     </table>
